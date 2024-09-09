@@ -7,6 +7,7 @@ import (
 	"io/fs"
 	"net/http"
 	"os"
+	"os/exec"
 )
 
 func main() {
@@ -41,5 +42,10 @@ func CheckForDatabase() {
 		fmt.Println("Db exists")
 		return
 	}
-	fmt.Println("Db does not exist")
+	fmt.Println("Db does not exist, creating db")
+	command := "cat init/users.sql | sqlite3 database/users.db"
+	err = exec.Command("bash", "-c", command).Run()
+	if err != nil {
+		fmt.Println(err)
+	}
 }
