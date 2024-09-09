@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+
+	"github.com/google/uuid"
 )
 
 func HelloWorld(writer http.ResponseWriter, request *http.Request) {
@@ -22,7 +24,9 @@ func CreateUser(writer http.ResponseWriter, request *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Println(postParams.Username)
+	id := uuid.New()
+	username := postParams.Username
+	refreshToken := uuid.New()
 }
 
 func GetUser(writer http.ResponseWriter, request *http.Request) {
