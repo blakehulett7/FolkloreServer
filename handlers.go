@@ -24,9 +24,15 @@ func CreateUser(writer http.ResponseWriter, request *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	id := uuid.New()
+	//id := uuid.New()
 	username := postParams.Username
 	refreshToken := uuid.New()
+	response := struct {
+		Username     string    `json:"username"`
+		RefreshToken uuid.UUID `json:"refresh_token"`
+	}{username, refreshToken}
+	responseData, err := json.Marshal(response)
+	JsonResponse(writer, 201, responseData)
 }
 
 func GetUser(writer http.ResponseWriter, request *http.Request) {
