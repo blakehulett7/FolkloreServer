@@ -16,13 +16,11 @@ func TestCreateUser(t *testing.T) {
 		payloadStruct struct {
 			Username string `json:"username"`
 		}
-		want map[string]string
 	}{
 		"simple": {
 			payloadStruct: struct {
 				Username string `json:"username"`
 			}{"bhulett"},
-			want: map[string]string{"id": "1", "username": "bhulett", "refresh_token": "asdf"},
 		},
 	}
 	for name, test := range tests {
