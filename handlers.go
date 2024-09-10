@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/blakehulett7/goSqueal"
 	"github.com/google/uuid"
 )
 
@@ -24,15 +25,16 @@ func CreateUser(writer http.ResponseWriter, request *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	//id := uuid.New()
-	username := postParams.Username
-	refreshToken := uuid.New()
-	response := struct {
-		Username     string    `json:"username"`
-		RefreshToken uuid.UUID `json:"refresh_token"`
-	}{username, refreshToken}
-	responseData, err := json.Marshal(response)
-	JsonResponse(writer, 201, responseData)
+	id := uuid.NewString()
+	params := map[string]string{
+		"id":           id,
+		"username":     postParams.Username,
+		"refreshToken": uuid.NewString(),
+	}
+	goSqueal.CreateTableEntry("users", params)
+	fmt.Println(goSqueal.GetTableEntry("users", id))
+	//responseData, err := json.Marshal(response)
+	//JsonResponse(writer, 201, responseData)
 }
 
 func GetUser(writer http.ResponseWriter, request *http.Request) {
