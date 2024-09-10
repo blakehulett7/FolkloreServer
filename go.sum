@@ -10,5 +10,7 @@ github.com/blakehulett7/goSqueal v0.0.0-20240909232715-5b5e3c253280 h1:re9WVO4ne
 github.com/blakehulett7/goSqueal v0.0.0-20240909232715-5b5e3c253280/go.mod h1:vncEGBElgj+bkNuNIN8D6ScnFL5iIdO84A1uYW+owWQ=
 github.com/blakehulett7/goSqueal v0.0.0-20240910023544-83d76535214b h1:hTfqzGA62dEN/SrPPI3WWsBzKtbETWl/UNwFUpvSz84=
 github.com/blakehulett7/goSqueal v0.0.0-20240910023544-83d76535214b/go.mod h1:vncEGBElgj+bkNuNIN8D6ScnFL5iIdO84A1uYW+owWQ=
+github.com/blakehulett7/goSqueal v0.0.0-20240910171152-e0d8b7d40362 h1:drjugSQageDqIXJNfBvCaaKeT7vz8TVtn+IOtcDzop4=
+github.com/blakehulett7/goSqueal v0.0.0-20240910171152-e0d8b7d40362/go.mod h1:vncEGBElgj+bkNuNIN8D6ScnFL5iIdO84A1uYW+owWQ=
 github.com/google/uuid v1.6.0 h1:NIvaJDMOsjHA8n1jAhLSgzrAzy1Hgr+hNrb57e+94F0=
 github.com/google/uuid v1.6.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=

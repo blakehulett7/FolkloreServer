@@ -27,14 +27,24 @@ func CreateUser(writer http.ResponseWriter, request *http.Request) {
 	}
 	id := uuid.NewString()
 	params := map[string]string{
-		"id":           id,
-		"username":     postParams.Username,
-		"refreshToken": uuid.NewString(),
+		"id":            id,
+		"username":      postParams.Username,
+		"refresh_token": uuid.NewString(),
 	}
 	goSqueal.CreateTableEntry("users", params)
-	fmt.Println(goSqueal.GetTableEntry("users", id))
-	//responseData, err := json.Marshal(response)
-	//JsonResponse(writer, 201, responseData)
+	entryMap := goSqueal.GetTableEntry("users", id)
+	responseStruct := struct {
+		Id           string `json:"id"`
+		Username     string `json:"username"`
+		RefreshToken string `json:"refresh_token"`
+	}{
+		entryMap["id"], entryMap["username"], entryMap["refresh_token"],
+	}
+	responseData, err := json.Marshal(responseStruct)
+	if err != nil {
+		fmt.Println("can't marshal response to create user, error:", err)
+	}
+	JsonResponse(writer, 201, responseData)
 }
 
 func GetUser(writer http.ResponseWriter, request *http.Request) {
