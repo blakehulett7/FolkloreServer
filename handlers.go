@@ -4,8 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
+	"time"
 
 	"github.com/blakehulett7/goSqueal"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -15,6 +18,20 @@ func HelloWorld(writer http.ResponseWriter, request *http.Request) {
 		Message string `json:"message"`
 	}{Message: "Christ is King!"})
 	JsonResponse(writer, 200, message)
+}
+
+func GenerateJWT(id string) string {
+	jwtSecret := os.Getenv("JWT_SECRET")
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.RegisteredClaims{
+		IssuedAt:  jwt.NewNumericDate(time.Now()),
+		ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
+		Subject:   id,
+	})
+	jwt, err := token.SignedString(jwtSecret)
+	if err != nil {
+		fmt.Println("error signing the jwt:", err)
+	}
+	return jwt
 }
 
 func CreateUser(writer http.ResponseWriter, request *http.Request) {
@@ -41,11 +58,12 @@ func CreateUser(writer http.ResponseWriter, request *http.Request) {
 	}
 	goSqueal.CreateTableEntry("users", params)
 	entryMap := goSqueal.GetTableEntry("users", id)
+	token := GenerateJWT(id)
 	responseStruct := struct {
 		Token        string `json:"token"`
 		RefreshToken string `json:"refresh_token"`
 	}{
-		entryMap["username"], entryMap["refresh_token"],
+		token, entryMap["refresh_token"],
 	}
 	responseData, err := json.Marshal(responseStruct)
 	if err != nil {
