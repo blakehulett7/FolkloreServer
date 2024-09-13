@@ -34,6 +34,19 @@ func GenerateJWT(id string) string {
 	return jwt
 }
 
+func GetIdFromJWT(tokenString string) string {
+	jwtSecret := os.Getenv("JWT_SECRET")
+	token, err := jwt.ParseWithClaims(tokenString, &jwt.RegisteredClaims{}, func(t *jwt.Token) (interface{}, error) { return jwtSecret, nil })
+	if err != nil {
+		fmt.Println("error validating token:", err)
+	}
+	id, err := token.Claims.GetSubject()
+	if err != nil {
+		fmt.Println("error extracting id from token:", err)
+	}
+	return id
+}
+
 func CreateUser(writer http.ResponseWriter, request *http.Request) {
 	decoder := json.NewDecoder(request.Body)
 	postParams := struct {

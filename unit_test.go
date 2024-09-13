@@ -5,14 +5,17 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"reflect"
 	"testing"
 
 	"github.com/blakehulett7/goSqueal"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 func TestCreateUser(t *testing.T) {
 	goSqueal.CheckForTable("users")
+	jwtSecret := os.Getenv("JWT_SECRET")
 	type payloadStruct struct {
 		Username string `json:"username"`
 		Password string `json:"password"`
@@ -47,6 +50,8 @@ func TestCreateUser(t *testing.T) {
 				t.Fatal("error: response in the wrong shape...")
 			}
 			responseMap := map[string]string{"token": response.Token, "refresh_token": response.RefreshToken}
+			token, err := jwt.ParseWithClaims(response.Token, &jwt.RegisteredClaims{}, func(t *jwt.Token) (interface{}, error) { return jwtSecret, nil })
+			id, err := token.Claims.GetSubject()
 			dbEntry := goSqueal.GetTableEntry("users", response.Id)
 			if !reflect.DeepEqual(responseMap, dbEntry) {
 				t.Fatalf("response does not match database entry, got %v, want %v...", responseMap, dbEntry)
