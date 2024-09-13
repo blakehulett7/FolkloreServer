@@ -12,20 +12,17 @@ import (
 )
 
 func TestCreateUser(t *testing.T) {
-	tests := map[string]struct {
-		payloadStruct struct {
-			Username string `json:"username"`
-		}
-	}{
-		"simple": {
-			payloadStruct: struct {
-				Username string `json:"username"`
-			}{"bhulett"},
-		},
+	goSqueal.CheckForTable("users")
+	type payloadStruct struct {
+		Username string `json:"username"`
+		Password string `json:"password"`
+	}
+	tests := map[string]payloadStruct{
+		"simple": {"bhulett", "1234"},
 	}
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {
-			payload, err := json.Marshal(test.payloadStruct)
+			payload, err := json.Marshal(test)
 			if err != nil {
 				t.Fatal("error: could not marshal payload")
 			}
@@ -42,17 +39,17 @@ func TestCreateUser(t *testing.T) {
 				t.Fatal("error: wrong status code...")
 			}
 			response := struct {
-				Id           string `json:"id"`
-				Username     string `json:"username"`
+				Token        string `json:"token"`
 				RefreshToken string `json:"refresh_token"`
 			}{}
 			err = json.Unmarshal(responseRecorder.Body.Bytes(), &response)
 			if err != nil {
 				t.Fatal("error: response in the wrong shape...")
 			}
-			responseMap := map[string]string{"id": response.Id, "username": response.Username, "refresh_token": response.RefreshToken}
-			if !reflect.DeepEqual(responseMap, goSqueal.GetTableEntry("users", response.Id)) {
-				t.Fatal("response does not match database entry...")
+			responseMap := map[string]string{"token": response.Token, "refresh_token": response.RefreshToken}
+			dbEntry := goSqueal.GetTableEntry("users", response.Id)
+			if !reflect.DeepEqual(responseMap, dbEntry) {
+				t.Fatalf("response does not match database entry, got %v, want %v...", responseMap, dbEntry)
 			}
 			goSqueal.DeleteTableEntry("users", response.Id)
 		})

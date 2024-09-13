@@ -7,6 +7,7 @@ import (
 
 	"github.com/blakehulett7/goSqueal"
 	"github.com/google/uuid"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func HelloWorld(writer http.ResponseWriter, request *http.Request) {
@@ -20,25 +21,31 @@ func CreateUser(writer http.ResponseWriter, request *http.Request) {
 	decoder := json.NewDecoder(request.Body)
 	postParams := struct {
 		Username string `json:"username"`
+		Password string `json:"password"`
 	}{}
 	err := decoder.Decode(&postParams)
 	if err != nil {
 		fmt.Println(err)
 	}
 	id := uuid.NewString()
+	passwordBytes, err := bcrypt.GenerateFromPassword([]byte(postParams.Password), bcrypt.DefaultCost)
+	if err != nil {
+		fmt.Println("error generating password hash:", err)
+	}
+	password := string(passwordBytes)
 	params := map[string]string{
 		"id":            id,
+		"password":      password,
 		"username":      postParams.Username,
 		"refresh_token": uuid.NewString(),
 	}
 	goSqueal.CreateTableEntry("users", params)
 	entryMap := goSqueal.GetTableEntry("users", id)
 	responseStruct := struct {
-		Id           string `json:"id"`
-		Username     string `json:"username"`
+		Token        string `json:"token"`
 		RefreshToken string `json:"refresh_token"`
 	}{
-		entryMap["id"], entryMap["username"], entryMap["refresh_token"],
+		entryMap["username"], entryMap["refresh_token"],
 	}
 	responseData, err := json.Marshal(responseStruct)
 	if err != nil {
