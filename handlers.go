@@ -27,7 +27,7 @@ func GenerateJWT(id string) string {
 		ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
 		Subject:   id,
 	})
-	jwt, err := token.SignedString(jwtSecret)
+	jwt, err := token.SignedString([]byte(jwtSecret))
 	if err != nil {
 		fmt.Println("error signing the jwt:", err)
 	}
@@ -36,7 +36,7 @@ func GenerateJWT(id string) string {
 
 func GetIdFromJWT(tokenString string) string {
 	jwtSecret := os.Getenv("JWT_SECRET")
-	token, err := jwt.ParseWithClaims(tokenString, &jwt.RegisteredClaims{}, func(t *jwt.Token) (interface{}, error) { return jwtSecret, nil })
+	token, err := jwt.ParseWithClaims(tokenString, &jwt.RegisteredClaims{}, func(t *jwt.Token) (interface{}, error) { return []byte(jwtSecret), nil })
 	if err != nil {
 		fmt.Println("error validating token:", err)
 	}
