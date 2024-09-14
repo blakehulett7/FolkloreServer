@@ -9,7 +9,7 @@ import (
 
 func main() {
 	fmt.Println("Christ is King!")
-	fmt.Println("\nWelcome to the language learner web server... Name is wip and will change to something cool")
+	fmt.Println("\nWelcome to Folklore!")
 	goSqueal.CheckForTable("users")
 	muxHandler := http.NewServeMux()
 	server := &http.Server{
