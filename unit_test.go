@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"reflect"
@@ -58,9 +59,30 @@ func TestCreateUser(t *testing.T) {
 }
 
 func TestCheckUsername(t *testing.T) {
-	type payloadStruct struct {
-		Username string `json:"username"`
-	}
+	goSqueal.CreateTableEntry("users", map[string]string{"id": "1", "username": "FireMage", "refresh_token": "asdf"})
+	defer goSqueal.DeleteTableEntry("users", "1")
 	tests := map[string]struct {
+		Url  string
+		Want int
+	}{
+		"simple":              {"/v1/users/bhulett", 201},
+		"user already exists": {"/v1/users/FireMage", 208},
+	}
+	for name, test := range tests {
+		t.Run(name, func(t *testing.T) {
+			req, err := http.NewRequest("GET", test.Url, bytes.NewBuffer([]byte("")))
+			if err != nil {
+				t.Fatalf("error making request: %v", err)
+			}
+
+			responseRecorder := httptest.NewRecorder()
+			handler := http.HandlerFunc(CheckUsername)
+			handler.ServeHTTP(responseRecorder, req)
+
+			if responseRecorder.Code != test.Want {
+				fmt.Println(responseRecorder.Code, test.Want)
+				t.Fatal("Wrong response code sent")
+			}
+		})
 	}
 }
