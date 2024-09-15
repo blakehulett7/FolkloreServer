@@ -14,6 +14,8 @@ github.com/blakehulett7/goSqueal v0.0.0-20240910171152-e0d8b7d40362 h1:drjugSQag
 github.com/blakehulett7/goSqueal v0.0.0-20240910171152-e0d8b7d40362/go.mod h1:vncEGBElgj+bkNuNIN8D6ScnFL5iIdO84A1uYW+owWQ=
 github.com/blakehulett7/goSqueal v0.0.0-20240914140043-6ce71b7d6415 h1:EvoNEcD+ep3gWZBjWCp9HVJrErR6z5+6awx85Rh6KGM=
 github.com/blakehulett7/goSqueal v0.0.0-20240914140043-6ce71b7d6415/go.mod h1:vncEGBElgj+bkNuNIN8D6ScnFL5iIdO84A1uYW+owWQ=
+github.com/blakehulett7/goSqueal v0.0.0-20240914174029-c4942502a2c0 h1:OWnaMWtd+ClQduGtjs4RI0ctjIyEscVn4tYh4WyEL+U=
+github.com/blakehulett7/goSqueal v0.0.0-20240914174029-c4942502a2c0/go.mod h1:vncEGBElgj+bkNuNIN8D6ScnFL5iIdO84A1uYW+owWQ=
 github.com/golang-jwt/jwt v3.2.2+incompatible h1:IfV12K8xAKAnZqdXVzCZ+TOjboZ2keLg81eXfW3O+oY=
 github.com/golang-jwt/jwt v3.2.2+incompatible/go.mod h1:8pz2t5EyA70fFQQSrl6XZXzqecmYZeUEB8OUGHkxJ+I=
 github.com/golang-jwt/jwt/v5 v5.2.1 h1:OuVbFODueb089Lh128TAcimifWaLhJwVflnrgM17wHk=

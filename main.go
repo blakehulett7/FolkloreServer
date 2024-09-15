@@ -19,6 +19,7 @@ func main() {
 	muxHandler.HandleFunc("GET /v1/helloworld", HelloWorld)
 	muxHandler.HandleFunc("POST /v1/users", CreateUser)
 	muxHandler.HandleFunc("GET /v1/users", GetUser)
+	muxHandler.HandleFunc("GET /v1/users/{username}", CheckUsername)
 	server.ListenAndServe()
 }
 
@@ -26,4 +27,9 @@ func JsonResponse(writer http.ResponseWriter, statusCode int, responseData []byt
 	writer.Header().Add("Content-Type", "application/json")
 	writer.WriteHeader(statusCode)
 	writer.Write(responseData)
+}
+
+func JsonHeaderResponse(writer http.ResponseWriter, statusCode int) {
+	writer.Header().Add("Content-Type", "application/json")
+	writer.WriteHeader(statusCode)
 }

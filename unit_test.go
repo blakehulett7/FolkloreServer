@@ -56,3 +56,11 @@ func TestCreateUser(t *testing.T) {
 		})
 	}
 }
+
+func TestCheckUsername(t *testing.T) {
+	type payloadStruct struct {
+		Username string `json:"username"`
+	}
+	tests := map[string]struct {
+	}
+}

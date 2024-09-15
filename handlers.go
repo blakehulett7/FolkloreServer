@@ -87,3 +87,21 @@ func CreateUser(writer http.ResponseWriter, request *http.Request) {
 
 func GetUser(writer http.ResponseWriter, request *http.Request) {
 }
+
+func CheckUsername(writer http.ResponseWriter, request *http.Request) {
+	reqParams := struct {
+		Username string `json:"username"`
+	}{}
+	err := json.NewDecoder(request.Body).Decode(&reqParams)
+	if err != nil {
+		fmt.Println("bad request:", err)
+		JsonHeaderResponse(writer, 400)
+		return
+	}
+	if goSqueal.ParamExistsInTable("users", "username", reqParams.Username) {
+		fmt.Println("username already exists")
+		JsonHeaderResponse(writer, 208)
+		return
+	}
+	JsonHeaderResponse(writer, 201)
+}
