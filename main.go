@@ -5,9 +5,11 @@ import (
 	"net/http"
 
 	"github.com/blakehulett7/goSqueal"
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	godotenv.Load()
 	fmt.Println("Christ is King!")
 	fmt.Println("\nWelcome to Folklore!")
 	goSqueal.CheckForTable("users")
