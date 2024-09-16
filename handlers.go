@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"strings"
 	"time"
 
 	"github.com/blakehulett7/goSqueal"
@@ -127,6 +128,7 @@ func Login(writer http.ResponseWriter, request *http.Request) {
 		fmt.Println("error finding username:", err)
 	}
 	entry := string(entryData)
+	entry = strings.ReplaceAll(entry, "\n", "")
 	fmt.Println(entry)
 	passwordMatches := bcrypt.CompareHashAndPassword(entryData, []byte(loginParams.Password))
 	if passwordMatches != nil {
