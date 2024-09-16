@@ -128,6 +128,13 @@ func TestLogin(t *testing.T) {
 			responseRecorder := httptest.NewRecorder()
 			handler := http.HandlerFunc(Login)
 			handler.ServeHTTP(responseRecorder, req)
+
+			resStruct := struct {
+				JWT          string `json:"jwt"`
+				RefreshToken string `json:"refresh_token"`
+			}{}
+			json.NewDecoder(responseRecorder.Body).Decode(&resStruct)
+			fmt.Println(resStruct)
 		})
 	}
 }
