@@ -65,7 +65,7 @@ func TestCheckUsername(t *testing.T) {
 		Username string
 		Want     int
 	}{
-		"simple":              {"bhulett", 201},
+		"simple":              {"bhulett", 200},
 		"user already exists": {"FireMage", 208},
 	}
 	for name, test := range tests {

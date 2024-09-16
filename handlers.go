@@ -94,5 +94,5 @@ func CheckUsername(writer http.ResponseWriter, request *http.Request) {
 		JsonHeaderResponse(writer, 208)
 		return
 	}
-	JsonHeaderResponse(writer, 201)
+	JsonHeaderResponse(writer, 200)
 }
