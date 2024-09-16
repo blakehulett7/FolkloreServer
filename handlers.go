@@ -128,4 +128,10 @@ func Login(writer http.ResponseWriter, request *http.Request) {
 	}
 	entry := string(entryData)
 	fmt.Println(entry)
+	passwordMatches := bcrypt.CompareHashAndPassword(entryData, []byte(loginParams.Password))
+	if passwordMatches != nil {
+		fmt.Println("password is incorrect")
+		return
+	}
+	fmt.Println("password is correct")
 }

@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"os"
+	"os/exec"
 	"reflect"
 	"testing"
 
@@ -97,6 +99,11 @@ func TestLogin(t *testing.T) {
 	request, err2 := http.NewRequest("POST", "/v1/users", bytes.NewBuffer(createUserParams))
 	createFunc := http.HandlerFunc(CreateUser)
 	createFunc.ServeHTTP(httptest.NewRecorder(), request)
+	sqlQuery := "DELETE FROM users WHERE username = 'bhulett';"
+	os.WriteFile("query2.sql", []byte(sqlQuery), defaultOpenPermissions)
+	command := "cat query2.sql | sqlite3 database.db"
+	defer exec.Command("rm", "query2.sql").Run()
+	defer exec.Command("bash", "-c", command).Run()
 	if err != nil || err2 != nil {
 		t.Fatal("Couldn't create test user...")
 	}
@@ -105,7 +112,8 @@ func TestLogin(t *testing.T) {
 		Password string `json:"password"`
 		Want     string `json:"want"`
 	}{
-		"simple": {"bhulett", "1234", "refresh_token"},
+		"correct password":   {"bhulett", "1234", "refresh_token"},
+		"incorrect password": {"bhulett", "5678", "refresh_token"},
 	}
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {
