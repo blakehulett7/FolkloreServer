@@ -20,6 +20,7 @@ func main() {
 	muxHandler.HandleFunc("POST /v1/users", CreateUser)
 	muxHandler.HandleFunc("GET /v1/users", GetUser)
 	muxHandler.HandleFunc("GET /v1/users/{username}", CheckUsername)
+	muxHandler.HandleFunc("POST /v1/login", Login)
 	server.ListenAndServe()
 }
 

@@ -1,6 +1,6 @@
 CREATE TABLE users (
     id PRIMARY KEY,
-    password TEXT,
     username TEXT,
+    password TEXT,
     refresh_token TEXT
 );

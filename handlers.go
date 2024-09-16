@@ -3,8 +3,10 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io/fs"
 	"net/http"
 	"os"
+	"os/exec"
 	"time"
 
 	"github.com/blakehulett7/goSqueal"
@@ -12,6 +14,15 @@ import (
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
+
+const defaultOpenPermissions = 0777
+
+type User struct {
+	Id           string
+	Username     string
+	Password     string
+	RefreshToken string
+}
 
 func HelloWorld(writer http.ResponseWriter, request *http.Request) {
 	message, _ := json.Marshal(struct {
@@ -95,4 +106,26 @@ func CheckUsername(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 	JsonHeaderResponse(writer, 200)
+}
+
+func Login(writer http.ResponseWriter, request *http.Request) {
+	loginParams := struct {
+		Username string `json:"username"`
+		Password string `json:"password"`
+	}{}
+	err := json.NewDecoder(request.Body).Decode(&loginParams)
+	if err != nil {
+		fmt.Println("error decoding login params:", err)
+		return
+	}
+	sqlQuery := fmt.Sprintf("SELECT password FROM users WHERE username = '%v'", loginParams.Username)
+	os.WriteFile("query.sql", []byte(sqlQuery), fs.FileMode(defaultOpenPermissions))
+	defer exec.Command("rm", "query.sql").Run()
+	command := "cat query.sql | sqlite3 database.db"
+	entryData, err := exec.Command("bash", "-c", command).Output()
+	if err != nil {
+		fmt.Println("error finding username:", err)
+	}
+	entry := string(entryData)
+	fmt.Println(entry)
 }

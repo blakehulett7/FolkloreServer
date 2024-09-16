@@ -87,3 +87,39 @@ func TestCheckUsername(t *testing.T) {
 		})
 	}
 }
+
+func TestLogin(t *testing.T) {
+	type payloadStruct struct {
+		Username string
+		Password string
+	}
+	createUserParams, err := json.Marshal(payloadStruct{"bhulett", "1234"})
+	request, err2 := http.NewRequest("POST", "/v1/users", bytes.NewBuffer(createUserParams))
+	createFunc := http.HandlerFunc(CreateUser)
+	createFunc.ServeHTTP(httptest.NewRecorder(), request)
+	if err != nil || err2 != nil {
+		t.Fatal("Couldn't create test user...")
+	}
+	tests := map[string]struct {
+		Username string `json:"username"`
+		Password string `json:"password"`
+		Want     string `json:"want"`
+	}{
+		"simple": {"bhulett", "1234", "refresh_token"},
+	}
+	for name, test := range tests {
+		t.Run(name, func(t *testing.T) {
+			payload, err := json.Marshal(test)
+			if err != nil {
+				t.Fatal("couldn't marshal json")
+			}
+			req, err := http.NewRequest("POST", "/v1/login", bytes.NewBuffer(payload))
+			if err != nil {
+				t.Fatal("error making the request...")
+			}
+			responseRecorder := httptest.NewRecorder()
+			handler := http.HandlerFunc(Login)
+			handler.ServeHTTP(responseRecorder, req)
+		})
+	}
+}
