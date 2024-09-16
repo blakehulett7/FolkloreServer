@@ -119,7 +119,7 @@ func Login(writer http.ResponseWriter, request *http.Request) {
 		fmt.Println("error decoding login params:", err)
 		return
 	}
-	sqlQuery := fmt.Sprintf("SELECT password FROM users WHERE username = '%v'", loginParams.Username)
+	sqlQuery := fmt.Sprintf("SELECT id, password, refresh_token FROM users WHERE username = '%v'", loginParams.Username)
 	os.WriteFile("query.sql", []byte(sqlQuery), fs.FileMode(defaultOpenPermissions))
 	defer exec.Command("rm", "query.sql").Run()
 	command := "cat query.sql | sqlite3 database.db"
@@ -129,11 +129,19 @@ func Login(writer http.ResponseWriter, request *http.Request) {
 	}
 	entry := string(entryData)
 	entry = strings.ReplaceAll(entry, "\n", "")
-	fmt.Println(entry)
-	passwordMatches := bcrypt.CompareHashAndPassword(entryData, []byte(loginParams.Password))
+	values := strings.Split(entry, "|")
+	passwordMatches := bcrypt.CompareHashAndPassword([]byte(values[1]), []byte(loginParams.Password))
 	if passwordMatches != nil {
-		fmt.Println("password is incorrect")
+		JsonHeaderResponse(writer, 401)
 		return
 	}
-	fmt.Println("password is correct")
+	jwt := GenerateJWT(values[0])
+	res, err := json.Marshal(struct {
+		JWT          string `json:"jwt"`
+		RefreshToken string `json:"refresh_token"`
+	}{jwt, values[2]})
+	if err != nil {
+		fmt.Println("Error couldn't marshal response:", err)
+	}
+	JsonResponse(writer, 200, res)
 }
