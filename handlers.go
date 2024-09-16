@@ -19,10 +19,10 @@ import (
 const defaultOpenPermissions = 0777
 
 type User struct {
-	Id           string
-	Username     string
-	Password     string
-	RefreshToken string
+	Id           string `json:"id"`
+	Username     string `json:"username"`
+	Password     string `json:"password"`
+	RefreshToken string `json:"refresh_token"`
 }
 
 func HelloWorld(writer http.ResponseWriter, request *http.Request) {
@@ -51,10 +51,12 @@ func GetIdFromJWT(tokenString string) string {
 	token, err := jwt.ParseWithClaims(tokenString, &jwt.RegisteredClaims{}, func(t *jwt.Token) (interface{}, error) { return []byte(jwtSecret), nil })
 	if err != nil {
 		fmt.Println("error validating token:", err)
+		return ""
 	}
 	id, err := token.Claims.GetSubject()
 	if err != nil {
 		fmt.Println("error extracting id from token:", err)
+		return ""
 	}
 	return id
 }
@@ -98,6 +100,23 @@ func CreateUser(writer http.ResponseWriter, request *http.Request) {
 }
 
 func GetUser(writer http.ResponseWriter, request *http.Request) {
+	token := request.Header.Get("Authorization")
+	id := GetIdFromJWT(token)
+	isBadToken := ""
+	if id == isBadToken {
+		JsonHeaderResponse(writer, 401)
+		return
+	}
+	UserMap := goSqueal.GetTableEntry("users", id)
+	user := User{
+		Id:       UserMap["id"],
+		Username: UserMap["username"],
+	}
+	payload, err := json.Marshal(user)
+	if err != nil {
+		fmt.Println("error marshalling response:", err)
+	}
+	JsonResponse(writer, 200, payload)
 }
 
 func CheckUsername(writer http.ResponseWriter, request *http.Request) {
