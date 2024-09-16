@@ -90,9 +90,7 @@ func GetUser(writer http.ResponseWriter, request *http.Request) {
 
 func CheckUsername(writer http.ResponseWriter, request *http.Request) {
 	username := request.PathValue("username")
-	fmt.Println(username)
 	if goSqueal.ParamExistsInTable("users", "username", username) {
-		fmt.Println("username already exists")
 		JsonHeaderResponse(writer, 208)
 		return
 	}

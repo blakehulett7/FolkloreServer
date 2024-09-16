@@ -62,15 +62,16 @@ func TestCheckUsername(t *testing.T) {
 	goSqueal.CreateTableEntry("users", map[string]string{"id": "1", "username": "FireMage", "refresh_token": "asdf"})
 	defer goSqueal.DeleteTableEntry("users", "1")
 	tests := map[string]struct {
-		Url  string
-		Want int
+		Username string
+		Want     int
 	}{
-		"simple":              {"/v1/users/bhulett", 201},
-		"user already exists": {"/v1/users/FireMage", 208},
+		"simple":              {"bhulett", 201},
+		"user already exists": {"FireMage", 208},
 	}
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {
-			req, err := http.NewRequest("GET", test.Url, bytes.NewBuffer([]byte("")))
+			req, err := http.NewRequest("GET", "http://test.com", bytes.NewBuffer([]byte("")))
+			req.SetPathValue("username", test.Username)
 			if err != nil {
 				t.Fatalf("error making request: %v", err)
 			}
