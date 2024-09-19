@@ -84,6 +84,7 @@ func CreateUser(writer http.ResponseWriter, request *http.Request) {
 		"refresh_token": uuid.NewString(),
 	}
 	goSqueal.CreateTableEntry("users", params)
+	InitListeningStreak(id)
 	entryMap := goSqueal.GetTableEntry("users", id)
 	token := GenerateJWT(id)
 	responseStruct := struct {

@@ -9,6 +9,7 @@ import (
 	"os"
 	"os/exec"
 	"reflect"
+	"strconv"
 	"testing"
 
 	"github.com/blakehulett7/goSqueal"
@@ -136,5 +137,24 @@ func TestLogin(t *testing.T) {
 			json.NewDecoder(responseRecorder.Body).Decode(&resStruct)
 			fmt.Println(resStruct)
 		})
+	}
+}
+
+func TestInitListeningStreak(t *testing.T) {
+	want := 0
+	goSqueal.CreateTableEntry("users", map[string]string{
+		"id":            "1",
+		"username":      "firemage",
+		"refresh_token": "asdf",
+	})
+	defer goSqueal.DeleteTableEntry("users", "1")
+	InitListeningStreak("1")
+	entryMap := goSqueal.GetTableEntry("users", "1")
+	got, err := strconv.Atoi(entryMap["listening_streak"])
+	if err != nil {
+		t.Fatal("Couldn't parse listening streak value:", err)
+	}
+	if want != got {
+		t.Fatalf("failed to initialize listening streak: expected %v, got %v", want, got)
 	}
 }

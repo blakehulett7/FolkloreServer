@@ -2,5 +2,6 @@ CREATE TABLE users (
     id PRIMARY KEY,
     username TEXT,
     password TEXT,
-    refresh_token TEXT
+    refresh_token TEXT,
+    listening_streak INTEGER
 );
