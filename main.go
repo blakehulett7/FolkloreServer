@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/blakehulett7/goSqueal"
+	"github.com/google/uuid"
 	"github.com/joho/godotenv"
 )
 
@@ -13,6 +14,13 @@ func main() {
 	fmt.Println("Christ is King!")
 	fmt.Println("\nWelcome to Folklore!")
 	goSqueal.CheckForTable("users")
+	goSqueal.CheckForTable("languages")
+	goSqueal.CheckForTable("users_languages")
+	languageIds := GetLanguageIds()
+	if languageIds == nil {
+		fmt.Println("initializing languages")
+		languageIds = InitializeLanguagesTable()
+	}
 	muxHandler := http.NewServeMux()
 	server := &http.Server{
 		Addr:    "localhost:8080",
@@ -35,4 +43,18 @@ func JsonResponse(writer http.ResponseWriter, statusCode int, responseData []byt
 func JsonHeaderResponse(writer http.ResponseWriter, statusCode int) {
 	writer.Header().Add("Content-Type", "application/json")
 	writer.WriteHeader(statusCode)
+}
+
+func InitializeLanguagesTable() map[string]string {
+	languageIds := map[string]string{}
+	for _, language := range languages {
+		fmt.Println(language)
+		id := uuid.NewString()
+		goSqueal.CreateTableEntry("languages", map[string]string{
+			"id":   id,
+			"name": language,
+		})
+		languageIds[language] = id
+	}
+	return languageIds
 }

@@ -15,6 +15,12 @@ import (
 	"github.com/blakehulett7/goSqueal"
 )
 
+func TestInit(t *testing.T) {
+	goSqueal.CheckForTable("users")
+	goSqueal.CheckForTable("languages")
+	goSqueal.CheckForTable("users_languages")
+}
+
 func TestCreateUser(t *testing.T) {
 	goSqueal.CheckForTable("users")
 	type payloadStruct struct {

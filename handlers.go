@@ -18,6 +18,8 @@ import (
 
 const defaultOpenPermissions = 0777
 
+var languages = []string{"Italian", "Spanish", "French"}
+
 type User struct {
 	Id              string `json:"id"`
 	Username        string `json:"username"`

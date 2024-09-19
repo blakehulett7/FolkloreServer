@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strings"
 )
 
 func InitListeningStreak(id string) {
@@ -26,4 +27,26 @@ func IncrementListeningStreak(id string) {
 	if err != nil {
 		fmt.Println("Couldn't increment listening streak, error:", err)
 	}
+}
+
+func GetLanguageIds() map[string]string {
+	languageIds := map[string]string{}
+	for _, language := range languages {
+		sqlQueryString := fmt.Sprintf("SELECT id FROM languages WHERE name = '%v'", language)
+		os.WriteFile("query.sql", []byte(sqlQueryString), defaultOpenPermissions)
+		command := "cat query.sql | sqlite3 database.db"
+		output, err := exec.Command("bash", "-c", command).Output()
+		if err != nil {
+			fmt.Println("Couldn't execute query, error:", err)
+		}
+		id := string(output)
+		if id == "" {
+			exec.Command("rm", "query.sql").Run()
+			return nil
+		}
+		id = strings.ReplaceAll(id, "\n", "")
+		languageIds[language] = id
+		exec.Command("rm", "query.sql").Run()
+	}
+	return languageIds
 }
