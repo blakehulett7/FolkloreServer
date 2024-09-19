@@ -16,6 +16,7 @@ func RunSqlQuery(sqlQueryString string) error {
 
 func OutputSqlQuery(sqlQueryString string) ([]byte, error) {
 	os.WriteFile("query.sql", []byte(sqlQueryString), defaultOpenPermissions)
+	defer exec.Command("rm", "query.sql").Run()
 	command := "cat query.sql | sqlite3 database.db"
 	return exec.Command("bash", "-c", command).Output()
 }
