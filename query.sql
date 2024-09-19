@@ -1,1 +1,0 @@
-SELECT name FROM languages WHERE id IN (SELECT language_id FROM users_languages WHERE user_id = '840f3f3d-83aa-444f-a780-9b3082bbaaa8');
