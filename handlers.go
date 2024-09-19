@@ -169,3 +169,27 @@ func Login(writer http.ResponseWriter, request *http.Request) {
 	}
 	JsonResponse(writer, 200, res)
 }
+
+func AddLanguage(writer http.ResponseWriter, request *http.Request) {
+	token := request.Header.Get("Authorization")
+	id := GetIdFromJWT(token)
+	isBadToken := ""
+	if id == isBadToken {
+		JsonHeaderResponse(writer, 401)
+		return
+	}
+	params := struct {
+		Name string `json:"name"`
+	}{}
+	err := json.NewDecoder(request.Body).Decode(&params)
+	if err != nil {
+		fmt.Println("Couldn't decode json, error:", err)
+		JsonHeaderResponse(writer, 400)
+		return
+	}
+	languageIds := GetLanguageIds()
+	goSqueal.CreateTableEntry("users_languages", map[string]string{
+		"user_id":     id,
+		"language_id": languageIds[params.Name],
+	})
+}

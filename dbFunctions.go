@@ -7,12 +7,16 @@ import (
 	"strings"
 )
 
-func InitListeningStreak(id string) {
-	sqlQueryString := fmt.Sprintf("UPDATE users SET listening_streak = 0 WHERE id = '%v'", id)
+func RunSqlQuery(sqlQueryString string) error {
 	os.WriteFile("query.sql", []byte(sqlQueryString), defaultOpenPermissions)
 	defer exec.Command("rm", "query.sql").Run()
 	command := "cat query.sql | sqlite3 database.db"
-	err := exec.Command("bash", "-c", command).Run()
+	return exec.Command("bash", "-c", command).Run()
+}
+
+func InitListeningStreak(id string) {
+	sqlQueryString := fmt.Sprintf("UPDATE users SET listening_streak = 0 WHERE id = '%v'", id)
+	err := RunSqlQuery(sqlQueryString)
 	if err != nil {
 		fmt.Println("Couldn't initialize listening streak, error:", err)
 	}
