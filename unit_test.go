@@ -19,6 +19,10 @@ func TestInit(t *testing.T) {
 	goSqueal.CheckForTable("users")
 	goSqueal.CheckForTable("languages")
 	goSqueal.CheckForTable("users_languages")
+	languageIds := GetLanguageIds()
+	if languageIds == nil {
+		languageIds = InitializeLanguagesTable()
+	}
 }
 
 func TestCreateUser(t *testing.T) {
@@ -183,4 +187,17 @@ func TestIncrementListeningStreak(t *testing.T) {
 	if want != got {
 		t.Fatalf("failed to initialize listening streak: expected %v, got %v", want, got)
 	}
+}
+
+func TestGetMyLanguages(t *testing.T) {
+	languageIds := GetLanguageIds()
+	for _, language := range languages {
+		goSqueal.CreateTableEntry("users_languages", map[string]string{
+			"user_id":     "1",
+			"language_id": languageIds[language],
+		})
+	}
+	GetMyLanguages("1")
+	sqlQuery := "DELETE FROM users_languages WHERE user_id = '1'"
+	RunSqlQuery(sqlQuery)
 }

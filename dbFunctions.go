@@ -14,6 +14,12 @@ func RunSqlQuery(sqlQueryString string) error {
 	return exec.Command("bash", "-c", command).Run()
 }
 
+func OutputSqlQuery(sqlQueryString string) ([]byte, error) {
+	os.WriteFile("query.sql", []byte(sqlQueryString), defaultOpenPermissions)
+	command := "cat query.sql | sqlite3 database.db"
+	return exec.Command("bash", "-c", command).Output()
+}
+
 func InitListeningStreak(id string) {
 	sqlQueryString := fmt.Sprintf("UPDATE users SET listening_streak = 0 WHERE id = '%v'", id)
 	err := RunSqlQuery(sqlQueryString)
@@ -53,4 +59,14 @@ func GetLanguageIds() map[string]string {
 		exec.Command("rm", "query.sql").Run()
 	}
 	return languageIds
+}
+
+func GetMyLanguages(userID string) []string {
+	sqlQueryString := fmt.Sprintf("SELECT language_id FROM users_languages WHERE user_id = '%v'", userID)
+	data, err := OutputSqlQuery(sqlQueryString)
+	if err != nil {
+		fmt.Println("Couldn't retrieve my languages, error:", err)
+	}
+	fmt.Println(string(data))
+	return []string{}
 }

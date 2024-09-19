@@ -32,6 +32,7 @@ func main() {
 	muxHandler.HandleFunc("GET /v1/users/{username}", CheckUsername)
 	muxHandler.HandleFunc("POST /v1/login", Login)
 	muxHandler.HandleFunc("POST /v1/users_languages", AddLanguage)
+	muxHandler.HandleFunc("GET /v1/users_languages", GetLanguages)
 	server.ListenAndServe()
 }
 

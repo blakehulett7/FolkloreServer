@@ -193,3 +193,13 @@ func AddLanguage(writer http.ResponseWriter, request *http.Request) {
 		"language_id": languageIds[params.Name],
 	})
 }
+
+func GetLanguages(writer http.ResponseWriter, request *http.Request) {
+	token := request.Header.Get("Authorization")
+	id := GetIdFromJWT(token)
+	isBadToken := ""
+	if id == isBadToken {
+		JsonHeaderResponse(writer, 401)
+		return
+	}
+}
