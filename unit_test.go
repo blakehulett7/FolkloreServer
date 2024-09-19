@@ -197,7 +197,10 @@ func TestGetMyLanguages(t *testing.T) {
 			"language_id": languageIds[language],
 		})
 	}
-	GetMyLanguages("1")
+	got := GetMyLanguages("1")
 	sqlQuery := "DELETE FROM users_languages WHERE user_id = '1'"
 	RunSqlQuery(sqlQuery)
+	if !reflect.DeepEqual(got, languages) {
+		t.Fatalf("failed to get my languages: expected %v, got %v", languages, got)
+	}
 }

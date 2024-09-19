@@ -62,11 +62,12 @@ func GetLanguageIds() map[string]string {
 }
 
 func GetMyLanguages(userID string) []string {
-	sqlQueryString := fmt.Sprintf("SELECT language_id FROM users_languages WHERE user_id = '%v'", userID)
+	sqlQueryString := fmt.Sprintf("SELECT name FROM languages WHERE id IN (SELECT language_id FROM users_languages WHERE user_id = '%v');", userID)
 	data, err := OutputSqlQuery(sqlQueryString)
 	if err != nil {
 		fmt.Println("Couldn't retrieve my languages, error:", err)
 	}
-	fmt.Println(string(data))
-	return []string{}
+	languageString := string(data)
+	languageSlice := strings.Split(languageString, "\n")
+	return languageSlice[:len(languageSlice)-1]
 }
