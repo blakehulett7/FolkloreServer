@@ -158,3 +158,23 @@ func TestInitListeningStreak(t *testing.T) {
 		t.Fatalf("failed to initialize listening streak: expected %v, got %v", want, got)
 	}
 }
+
+func TestIncrementListeningStreak(t *testing.T) {
+	want := 1
+	goSqueal.CreateTableEntry("users", map[string]string{
+		"id":            "1",
+		"username":      "firemage",
+		"refresh_token": "asdf",
+	})
+	defer goSqueal.DeleteTableEntry("users", "1")
+	InitListeningStreak("1")
+	IncrementListeningStreak("1")
+	entryMap := goSqueal.GetTableEntry("users", "1")
+	got, err := strconv.Atoi(entryMap["listening_streak"])
+	if err != nil {
+		t.Fatal("Couldn't parse listening streak value:", err)
+	}
+	if want != got {
+		t.Fatalf("failed to initialize listening streak: expected %v, got %v", want, got)
+	}
+}
