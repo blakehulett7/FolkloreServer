@@ -19,10 +19,11 @@ import (
 const defaultOpenPermissions = 0777
 
 type User struct {
-	Id           string `json:"id"`
-	Username     string `json:"username"`
-	Password     string `json:"password"`
-	RefreshToken string `json:"refresh_token"`
+	Id              string `json:"id"`
+	Username        string `json:"username"`
+	Password        string `json:"password"`
+	RefreshToken    string `json:"refresh_token"`
+	ListeningStreak string `json:"listening_streak"`
 }
 
 func HelloWorld(writer http.ResponseWriter, request *http.Request) {
@@ -110,8 +111,9 @@ func GetUser(writer http.ResponseWriter, request *http.Request) {
 	}
 	UserMap := goSqueal.GetTableEntry("users", id)
 	user := User{
-		Id:       UserMap["id"],
-		Username: UserMap["username"],
+		Id:              UserMap["id"],
+		Username:        UserMap["username"],
+		ListeningStreak: UserMap["listening_streak"],
 	}
 	payload, err := json.Marshal(user)
 	if err != nil {
