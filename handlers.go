@@ -21,11 +21,12 @@ const defaultOpenPermissions = 0777
 var languages = []string{"Italian", "Spanish", "French"}
 
 type User struct {
-	Id              string `json:"id"`
-	Username        string `json:"username"`
-	Password        string `json:"password"`
-	RefreshToken    string `json:"refresh_token"`
-	ListeningStreak string `json:"listening_streak"`
+	Id              string   `json:"id"`
+	Username        string   `json:"username"`
+	Password        string   `json:"password"`
+	RefreshToken    string   `json:"refresh_token"`
+	ListeningStreak string   `json:"listening_streak"`
+	Languages       []string `json:"languages"`
 }
 
 func HelloWorld(writer http.ResponseWriter, request *http.Request) {
@@ -116,6 +117,7 @@ func GetUser(writer http.ResponseWriter, request *http.Request) {
 		Id:              UserMap["id"],
 		Username:        UserMap["username"],
 		ListeningStreak: UserMap["listening_streak"],
+		Languages:       GetMyLanguages(UserMap["id"]),
 	}
 	payload, err := json.Marshal(user)
 	if err != nil {
@@ -192,6 +194,17 @@ func AddLanguage(writer http.ResponseWriter, request *http.Request) {
 		"user_id":     id,
 		"language_id": languageIds[params.Name],
 	})
+	userMap := goSqueal.GetTableEntry("users", id)
+	user := User{
+		Username:        userMap["username"],
+		ListeningStreak: userMap["listening_streak"],
+		Languages:       GetMyLanguages(id),
+	}
+	payload, err := json.Marshal(user)
+	if err != nil {
+		fmt.Println("Couldn't marshal response json after adding language, error:", err)
+	}
+	JsonResponse(writer, 201, payload)
 }
 
 func GetLanguages(writer http.ResponseWriter, request *http.Request) {
@@ -202,4 +215,13 @@ func GetLanguages(writer http.ResponseWriter, request *http.Request) {
 		JsonHeaderResponse(writer, 401)
 		return
 	}
+	myLanguages := GetMyLanguages(id)
+	res := struct {
+		Languages []string `json:"languages"`
+	}{myLanguages}
+	payload, err := json.Marshal(res)
+	if err != nil {
+		fmt.Println("Couldn't marshal requester's languages, error:", err)
+	}
+	JsonResponse(writer, 200, payload)
 }
