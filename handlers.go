@@ -257,4 +257,5 @@ func GetMyLanguageStats(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 	languageName := request.PathValue("language_name")
+	fmt.Println(languageName)
 }
