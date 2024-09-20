@@ -33,6 +33,7 @@ func main() {
 	muxHandler.HandleFunc("POST /v1/login", Login)
 	muxHandler.HandleFunc("POST /v1/users_languages", AddLanguage)
 	muxHandler.HandleFunc("GET /v1/users_languages", GetLanguages)
+	muxHandler.HandleFunc("DELETE /v1/users_languages/{language_name}", RemoveLanguage)
 	server.ListenAndServe()
 }
 

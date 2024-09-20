@@ -225,3 +225,25 @@ func GetLanguages(writer http.ResponseWriter, request *http.Request) {
 	}
 	JsonResponse(writer, 200, payload)
 }
+
+func RemoveLanguage(writer http.ResponseWriter, request *http.Request) {
+	token := request.Header.Get("Authorization")
+	id := GetIdFromJWT(token)
+	isBadToken := ""
+	if id == isBadToken {
+		JsonHeaderResponse(writer, 401)
+		return
+	}
+	languageName := request.PathValue("language_name")
+	languageIdMap := GetLanguageIds()
+	sqlQuery := fmt.Sprintf("DELETE FROM users_languages WHERE user_id = '%v' AND language_id = '%v';", id, languageIdMap[languageName])
+	RunSqlQuery(sqlQuery)
+	user := User{
+		Languages: GetMyLanguages(id),
+	}
+	payload, err := json.Marshal(user)
+	if err != nil {
+		fmt.Println("Couldn't marshal json response after deleting language, error:", err)
+	}
+	JsonResponse(writer, 200, payload)
+}
