@@ -247,3 +247,14 @@ func RemoveLanguage(writer http.ResponseWriter, request *http.Request) {
 	}
 	JsonResponse(writer, 200, payload)
 }
+
+func GetMyLanguageStats(writer http.ResponseWriter, request *http.Request) {
+	token := request.Header.Get("Authorization")
+	id := GetIdFromJWT(token)
+	isBadToken := ""
+	if id == isBadToken {
+		JsonHeaderResponse(writer, 401)
+		return
+	}
+	languageName := request.PathValue("language_name")
+}
