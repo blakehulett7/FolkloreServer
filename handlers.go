@@ -267,4 +267,10 @@ func GetMyLanguageStats(writer http.ResponseWriter, request *http.Request) {
 	languageIdMap := GetLanguageIds()
 	languageId := languageIdMap[languageName]
 	fmt.Println(languageId)
+	stats := GetMyStatsStruct(id, languageId)
+	payload, err := json.Marshal(stats)
+	if err != nil {
+		fmt.Println("Couldn't marshal my language stats json, error:", err)
+	}
+	JsonResponse(writer, 200, payload)
 }
