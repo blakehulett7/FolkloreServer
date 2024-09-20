@@ -204,3 +204,21 @@ func TestGetMyLanguages(t *testing.T) {
 		t.Fatalf("failed to get my languages: expected %v, got %v", languages, got)
 	}
 }
+
+func TestGetMyStatsStruct(t *testing.T) {
+	languageIds := GetLanguageIds()
+	for _, language := range languages {
+		goSqueal.CreateTableEntry("users_languages", map[string]string{
+			"user_id":     "1",
+			"language_id": languageIds[language],
+		})
+		InitMyLanguageStats("1", languageIds[language])
+	}
+	got := GetMyStatsStruct("1", languageIds["Italian"])
+	want := Stats{BestListeningStreak: "0", CurrentListeningStreak: "0", WordsLearned: "0"}
+	sqlQuery := "DELETE FROM users_languages WHERE user_id = '1'"
+	RunSqlQuery(sqlQuery)
+	if !reflect.DeepEqual(got, want) {
+		t.Fatalf("failed to get my stats struct: expected %v, got %v", want, got)
+	}
+}

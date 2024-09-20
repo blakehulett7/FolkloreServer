@@ -29,6 +29,12 @@ type User struct {
 	Languages       []string `json:"languages"`
 }
 
+type Stats struct {
+	BestListeningStreak    string `json:"best_listening_streak"`
+	CurrentListeningStreak string `json:"current_listening_streak"`
+	WordsLearned           string `json:"words_learned"`
+}
+
 func HelloWorld(writer http.ResponseWriter, request *http.Request) {
 	message, _ := json.Marshal(struct {
 		Message string `json:"message"`
@@ -258,5 +264,7 @@ func GetMyLanguageStats(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 	languageName := request.PathValue("language_name")
-	fmt.Println(languageName)
+	languageIdMap := GetLanguageIds()
+	languageId := languageIdMap[languageName]
+	fmt.Println(languageId)
 }

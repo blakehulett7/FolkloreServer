@@ -80,3 +80,23 @@ func InitMyLanguageStats(userID, languageID string) {
 		fmt.Println("Couldn't initialize language stats...")
 	}
 }
+
+func IncrementMyLanguageStat(userID, languageID, statToIncrement string) {
+
+}
+
+func GetMyStatsStruct(userID, languageID string) Stats {
+	sqlQuery := fmt.Sprintf("SELECT best_listening_streak, current_listening_streak, words_learned FROM users_languages WHERE user_id = '%v' AND language_id = '%v';", userID, languageID)
+	data, err := OutputSqlQuery(sqlQuery)
+	if err != nil {
+		fmt.Println("Couldn't get my stats from the db...")
+	}
+	statsString := string(data)
+	statsString = strings.ReplaceAll(statsString, "\n", "")
+	statsSlice := strings.Split(statsString, "|")
+	return Stats{
+		BestListeningStreak:    statsSlice[0],
+		CurrentListeningStreak: statsSlice[1],
+		WordsLearned:           statsSlice[2],
+	}
+}
