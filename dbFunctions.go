@@ -72,3 +72,11 @@ func GetMyLanguages(userID string) []string {
 	languageSlice := strings.Split(languageString, "\n")
 	return languageSlice[:len(languageSlice)-1]
 }
+
+func InitMyLanguageStats(userID, languageID string) {
+	sqlQuery := fmt.Sprintf("UPDATE users_languages SET best_listening_steak = 0, current_listening_steak = 0, words_learned = 0 WHERE user_id = '%v' AND language_id = '%v';", userID, languageID)
+	err := RunSqlQuery(sqlQuery)
+	if err != nil {
+		fmt.Println("Couldn't initialize language stats...")
+	}
+}

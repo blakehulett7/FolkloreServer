@@ -194,6 +194,7 @@ func AddLanguage(writer http.ResponseWriter, request *http.Request) {
 		"user_id":     id,
 		"language_id": languageIds[params.Name],
 	})
+	InitMyLanguageStats(id, languageIds[params.Name])
 	userMap := goSqueal.GetTableEntry("users", id)
 	user := User{
 		Username:        userMap["username"],
