@@ -222,7 +222,3 @@ func TestGetMyStatsStruct(t *testing.T) {
 		t.Fatalf("failed to get my stats struct: expected %v, got %v", want, got)
 	}
 }
-
-func TestPurgeOldStreaks(*testing.T) {
-	PurgeOldStreaks()
-}

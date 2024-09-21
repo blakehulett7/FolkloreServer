@@ -118,7 +118,8 @@ func InitMyLanguageStats(userID, languageID string) {
 }
 
 func IncrementMyLanguageStat(userID, languageID, statToIncrement string) {
-
+	sqlQuery := fmt.Sprintf("UPDATE users_languages SET %v = %v + 1 WHERE user_id = '%v' AND language_id = '%v';", statToIncrement, statToIncrement, userID, languageID)
+	RunSqlQuery(sqlQuery)
 }
 
 func GetMyStatsStruct(userID, languageID string) Stats {
