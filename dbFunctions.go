@@ -108,6 +108,15 @@ func GetLastListenedAt(userID, languageID string) time.Time {
 	if err != nil {
 		fmt.Println("Couldn't get last listened at from the db...")
 	}
-	fmt.Println(string(data))
-	return time.Now()
+	stringified := string(data)
+	string := strings.ReplaceAll(stringified, "\n", "")
+	if string == "" {
+		fmt.Println("empty field")
+		return time.Now().Add(-7 * 24 * time.Hour)
+	}
+	time, err := time.Parse(timeFormat, string)
+	if err != nil {
+		fmt.Println("Couldn't parse the stored last listend at date in the db, error:", err)
+	}
+	return time
 }

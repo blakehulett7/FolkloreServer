@@ -18,6 +18,7 @@ import (
 )
 
 const defaultOpenPermissions = 0777
+const timeFormat = time.RFC3339
 
 var languages = []string{"Italian", "Spanish", "French"}
 var listenUrls = []string{"https://www.youtube.com/watch?v=hxre-NJtPKU", "https://www.youtube.com/watch?v=-xGws7UkWx0", "https://www.youtube.com/watch?v=zxngbsXXg5M"}
@@ -309,5 +310,9 @@ func IncrementMyListeningStreak(writer http.ResponseWriter, request *http.Reques
 	language := request.PathValue("language_name")
 	languageIds := GetLanguageIds()
 	languageID := languageIds[language]
-	fmt.Println(languageID)
+	lastListenedAt := GetLastListenedAt(id, languageID)
+	if !time.Now().After(lastListenedAt.Add(24 * time.Hour)) {
+		JsonHeaderResponse(writer, 200)
+		return
+	}
 }
