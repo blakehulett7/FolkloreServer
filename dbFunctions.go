@@ -122,6 +122,12 @@ func IncrementMyLanguageStat(userID, languageID, statToIncrement string) {
 	RunSqlQuery(sqlQuery)
 }
 
+func SetLastListenedAt(userID, languageID string) {
+	timeString := time.Now().Format(timeFormat)
+	sqlQuery := fmt.Sprintf("UPDATE users_languages SET last_listened_at = '%v' WHERE user_id = '%v' AND language_id = '%v';", timeString, userID, languageID)
+	RunSqlQuery(sqlQuery)
+}
+
 func GetMyStatsStruct(userID, languageID string) Stats {
 	sqlQuery := fmt.Sprintf("SELECT best_listening_streak, current_listening_streak, words_learned FROM users_languages WHERE user_id = '%v' AND language_id = '%v';", userID, languageID)
 	data, err := OutputSqlQuery(sqlQuery)

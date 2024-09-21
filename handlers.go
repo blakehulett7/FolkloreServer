@@ -316,6 +316,7 @@ func IncrementMyListeningStreak(writer http.ResponseWriter, request *http.Reques
 		return
 	}
 	IncrementMyLanguageStat(id, languageID, "current_listening_streak")
+	SetLastListenedAt(id, languageID)
 	/*
 		stats := GetMyStatsStruct(id, languageID)
 			for {
