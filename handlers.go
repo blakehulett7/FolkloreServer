@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"slices"
 	"strings"
 	"time"
 
@@ -20,6 +21,7 @@ const defaultOpenPermissions = 0777
 
 var languages = []string{"Italian", "Spanish", "French"}
 var listenUrls = []string{"https://www.youtube.com/watch?v=hxre-NJtPKU", "https://www.youtube.com/watch?v=-xGws7UkWx0", "https://www.youtube.com/watch?v=zxngbsXXg5M"}
+var isBadToken = ""
 
 type User struct {
 	Id              string   `json:"id"`
@@ -272,6 +274,27 @@ func GetMyLanguageStats(writer http.ResponseWriter, request *http.Request) {
 	payload, err := json.Marshal(stats)
 	if err != nil {
 		fmt.Println("Couldn't marshal my language stats json, error:", err)
+	}
+	JsonResponse(writer, 200, payload)
+}
+
+func ListenToLanguage(writer http.ResponseWriter, request *http.Request) {
+	token := request.Header.Get("Authorization")
+	id := GetIdFromJWT(token)
+	if id == isBadToken {
+		JsonHeaderResponse(writer, 401)
+		return
+	}
+	language := request.PathValue("language_name")
+	language_idx := slices.Index(languages, language)
+	res := struct {
+		Url string `json:"url"`
+	}{listenUrls[language_idx]}
+	payload, bug := json.Marshal(res)
+	if bug != nil {
+		fmt.Println("Bug! Can't marshal the listen url for", language+", error:", bug)
+		JsonHeaderResponse(writer, 500)
+		return
 	}
 	JsonResponse(writer, 200, payload)
 }
