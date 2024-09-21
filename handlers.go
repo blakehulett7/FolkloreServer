@@ -317,17 +317,9 @@ func IncrementMyListeningStreak(writer http.ResponseWriter, request *http.Reques
 	}
 	IncrementMyLanguageStat(id, languageID, "current_listening_streak")
 	SetLastListenedAt(id, languageID)
-	/*
-		stats := GetMyStatsStruct(id, languageID)
-			for {
-				if stats.CurrentListeningStreak < stats.BestListeningStreak {
-					break
-				}
-				if stats.CurrentListeningStreak == stats.BestListeningStreak {
-					break
-				}
-				IncrementMyLanguageStat(id, languageID, "best_listening_streak")
-			}
-	*/
+	stats := GetMyStatsStruct(id, languageID)
+	if stats.BestListeningStreak < stats.CurrentListeningStreak {
+		IncrementMyLanguageStat(id, languageID, "best_listening_streak")
+	}
 	JsonHeaderResponse(writer, 200)
 }
