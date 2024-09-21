@@ -315,4 +315,5 @@ func IncrementMyListeningStreak(writer http.ResponseWriter, request *http.Reques
 		JsonHeaderResponse(writer, 200)
 		return
 	}
+	IncrementMyLanguageStat(id, languageID, "current_listening_streak")
 }

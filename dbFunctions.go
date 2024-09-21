@@ -22,6 +22,41 @@ func OutputSqlQuery(sqlQueryString string) ([]byte, error) {
 	return exec.Command("bash", "-c", command).Output()
 }
 
+func PurgeOldStreaks() {
+	sqlQuery := fmt.Sprintf("SELECT user_id, language_id FROM users_languages;")
+	data, err := OutputSqlQuery(sqlQuery)
+	if err != nil {
+		fmt.Println("Couldn't check on the listening streaks, error:", err)
+		return
+	}
+	stringified := string(data)
+	entries := strings.Split(stringified, "\n")
+	entriesSlice := [][]string{}
+	for _, entry := range entries {
+		entrySlice := strings.Split(entry, "|")
+		entriesSlice = append(entriesSlice, entrySlice)
+	}
+	entriesSlice = entriesSlice[:len(entriesSlice)-1]
+	for _, entry := range entriesSlice {
+		userID := entry[0]
+		languageID := entry[1]
+		lastListenedAt := GetLastListenedAt(userID, languageID)
+		streakExpiresAt := lastListenedAt.Add(48 * time.Hour)
+		if !time.Now().After(streakExpiresAt) {
+			continue
+		}
+		sqlQuery = fmt.Sprintf("UPDATE users_languages SET current_listening_streak = 0 WHERE user_id = '%v' AND language_id = '%v';", userID, languageID)
+		RunSqlQuery(sqlQuery)
+	}
+}
+
+func PurgeStreaksWorker() {
+	for {
+		PurgeOldStreaks()
+		time.Sleep(24 * time.Hour)
+	}
+}
+
 func InitListeningStreak(id string) {
 	sqlQueryString := fmt.Sprintf("UPDATE users SET listening_streak = 0 WHERE id = '%v'", id)
 	err := RunSqlQuery(sqlQueryString)

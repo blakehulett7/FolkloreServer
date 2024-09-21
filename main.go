@@ -21,6 +21,7 @@ func main() {
 		fmt.Println("initializing languages")
 		languageIds = InitializeLanguagesTable()
 	}
+	go PurgeStreaksWorker()
 	muxHandler := http.NewServeMux()
 	server := &http.Server{
 		Addr:    "localhost:8080",
