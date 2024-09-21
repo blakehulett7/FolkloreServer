@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/exec"
 	"slices"
+	"strconv"
 	"strings"
 	"time"
 
@@ -318,8 +319,29 @@ func IncrementMyListeningStreak(writer http.ResponseWriter, request *http.Reques
 	IncrementMyLanguageStat(id, languageID, "current_listening_streak")
 	SetLastListenedAt(id, languageID)
 	stats := GetMyStatsStruct(id, languageID)
-	if stats.BestListeningStreak < stats.CurrentListeningStreak {
+	oldHighStreak, err := strconv.Atoi(stats.BestListeningStreak)
+	if err != nil {
+		fmt.Println("Couldn't parse the listening streak high score to check if it needs to be updated, error:", err)
+		JsonHeaderResponse(writer, 200)
+	}
+	currentStreak, err := strconv.Atoi(stats.CurrentListeningStreak)
+	if err != nil {
+		fmt.Println("Couldn't parse the listening streak high score to check if it needs to be updated, error:", err)
+		JsonHeaderResponse(writer, 200)
+	}
+	if oldHighStreak < currentStreak {
 		IncrementMyLanguageStat(id, languageID, "best_listening_streak")
+	}
+	userMap := goSqueal.GetTableEntry("users", id)
+	bestStreak, err := strconv.Atoi(userMap["listening_streak"])
+	if err != nil {
+		fmt.Println("Couldn't parse the listening streak high score to check if it needs to be updated, error:", err)
+		JsonHeaderResponse(writer, 200)
+	}
+	newHighStreak := max(oldHighStreak, currentStreak)
+	if bestStreak < newHighStreak {
+		sqlQuery := fmt.Sprintf("UPDATE users SET listening_streak = %v WHERE id = '%v';", stats.BestListeningStreak, id)
+		RunSqlQuery(sqlQuery)
 	}
 	JsonHeaderResponse(writer, 200)
 }
