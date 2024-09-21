@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"time"
 )
 
 func RunSqlQuery(sqlQueryString string) error {
@@ -99,4 +100,14 @@ func GetMyStatsStruct(userID, languageID string) Stats {
 		CurrentListeningStreak: statsSlice[1],
 		WordsLearned:           statsSlice[2],
 	}
+}
+
+func GetLastListenedAt(userID, languageID string) time.Time {
+	sqlQuery := fmt.Sprintf("SELECT last_listened_at FROM users_languages WHERE user_id = '%v' AND language_id = '%v';", userID, languageID)
+	data, err := OutputSqlQuery(sqlQuery)
+	if err != nil {
+		fmt.Println("Couldn't get last listened at from the db...")
+	}
+	fmt.Println(string(data))
+	return time.Now()
 }

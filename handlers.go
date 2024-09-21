@@ -298,3 +298,16 @@ func ListenToLanguage(writer http.ResponseWriter, request *http.Request) {
 	}
 	JsonResponse(writer, 200, payload)
 }
+
+func IncrementMyListeningStreak(writer http.ResponseWriter, request *http.Request) {
+	token := request.Header.Get("Authorization")
+	id := GetIdFromJWT(token)
+	if id == isBadToken {
+		JsonHeaderResponse(writer, 401)
+		return
+	}
+	language := request.PathValue("language_name")
+	languageIds := GetLanguageIds()
+	languageID := languageIds[language]
+	fmt.Println(languageID)
+}

@@ -4,5 +4,6 @@ create table users_languages(
     best_listening_streak integer,
     current_listening_streak integer,
     words_learned integer,
+    last_listened_at text,
     unique(user_id, language_id)
 );

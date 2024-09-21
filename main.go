@@ -36,6 +36,7 @@ func main() {
 	muxHandler.HandleFunc("GET /v1/users_languages/{language_name}", GetMyLanguageStats)
 	muxHandler.HandleFunc("DELETE /v1/users_languages/{language_name}", RemoveLanguage)
 	muxHandler.HandleFunc("GET /v1/listen/{language_name}", ListenToLanguage)
+	muxHandler.HandleFunc("GET /v1/increment_streak/{language_name}", IncrementMyListeningStreak)
 	server.ListenAndServe()
 }
 
