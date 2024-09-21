@@ -51,12 +51,13 @@ func JsonHeaderResponse(writer http.ResponseWriter, statusCode int) {
 
 func InitializeLanguagesTable() map[string]string {
 	languageIds := map[string]string{}
-	for _, language := range languages {
+	for idx, language := range languages {
 		fmt.Println(language)
 		id := uuid.NewString()
 		goSqueal.CreateTableEntry("languages", map[string]string{
-			"id":   id,
-			"name": language,
+			"id":         id,
+			"name":       language,
+			"listen_url": listenUrls[idx],
 		})
 		languageIds[language] = id
 	}

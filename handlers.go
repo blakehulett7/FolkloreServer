@@ -19,6 +19,7 @@ import (
 const defaultOpenPermissions = 0777
 
 var languages = []string{"Italian", "Spanish", "French"}
+var listenUrls = []string{"https://www.youtube.com/watch?v=hxre-NJtPKU", "https://www.youtube.com/watch?v=-xGws7UkWx0", "https://www.youtube.com/watch?v=zxngbsXXg5M"}
 
 type User struct {
 	Id              string   `json:"id"`
