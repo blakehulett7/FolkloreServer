@@ -1,5 +1,3 @@
-# ForLangWebAppNameWip
+# Folklore
 
-## Endpoints
-
-/v1/users - POST requests should be json with a "username" key. Ex.({"username":"yourusernamehere"})
+Host your own Folklore Server!
