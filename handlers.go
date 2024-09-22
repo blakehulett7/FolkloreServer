@@ -340,7 +340,7 @@ func IncrementMyListeningStreak(writer http.ResponseWriter, request *http.Reques
 	}
 	newHighStreak := max(oldHighStreak, currentStreak)
 	if bestStreak < newHighStreak {
-		sqlQuery := fmt.Sprintf("UPDATE users SET listening_streak = %v WHERE id = '%v';", stats.BestListeningStreak, id)
+		sqlQuery := fmt.Sprintf("UPDATE users SET listening_streak = %v WHERE id = '%v';", newHighStreak, id)
 		RunSqlQuery(sqlQuery)
 	}
 	JsonHeaderResponse(writer, 200)
