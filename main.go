@@ -11,8 +11,8 @@ import (
 
 func main() {
 	godotenv.Load()
-	fmt.Println("Christ is King!")
-	fmt.Println("\nWelcome to Folklore!")
+	fmt.Println("Welcome to Folklore!")
+	fmt.Println("")
 	goSqueal.CheckForTable("users")
 	goSqueal.CheckForTable("languages")
 	goSqueal.CheckForTable("users_languages")
