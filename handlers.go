@@ -323,25 +323,37 @@ func IncrementMyListeningStreak(writer http.ResponseWriter, request *http.Reques
 	if err != nil {
 		fmt.Println("Couldn't parse the listening streak high score to check if it needs to be updated, error:", err)
 		JsonHeaderResponse(writer, 200)
+		return
 	}
 	currentStreak, err := strconv.Atoi(stats.CurrentListeningStreak)
 	if err != nil {
 		fmt.Println("Couldn't parse the listening streak high score to check if it needs to be updated, error:", err)
 		JsonHeaderResponse(writer, 200)
+		return
 	}
 	if oldHighStreak < currentStreak {
 		IncrementMyLanguageStat(id, languageID, "best_listening_streak")
+		return
 	}
 	userMap := goSqueal.GetTableEntry("users", id)
 	bestStreak, err := strconv.Atoi(userMap["listening_streak"])
 	if err != nil {
 		fmt.Println("Couldn't parse the listening streak high score to check if it needs to be updated, error:", err)
 		JsonHeaderResponse(writer, 200)
+		return
 	}
 	newHighStreak := max(oldHighStreak, currentStreak)
 	if bestStreak < newHighStreak {
 		sqlQuery := fmt.Sprintf("UPDATE users SET listening_streak = %v WHERE id = '%v';", newHighStreak, id)
 		RunSqlQuery(sqlQuery)
 	}
-	JsonHeaderResponse(writer, 200)
+	userMap = goSqueal.GetTableEntry("users", id)
+	user := User{ListeningStreak: userMap["listening_streak"]}
+	payload, err := json.Marshal(user)
+	if err != nil {
+		fmt.Println("Couldn't parse the json for the updated user return for real time streak update, error:", err)
+		JsonHeaderResponse(writer, 200)
+		return
+	}
+	JsonResponse(writer, 200, payload)
 }
