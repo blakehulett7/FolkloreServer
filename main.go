@@ -24,7 +24,7 @@ func main() {
 	go PurgeStreaksWorker()
 	muxHandler := http.NewServeMux()
 	server := &http.Server{
-		Addr:    "localhost:8080",
+		Addr:    ":8080",
 		Handler: muxHandler,
 	}
 	muxHandler.HandleFunc("GET /v1/helloworld", HelloWorld)
